@@ -11,9 +11,11 @@ def main():
             if user_input.upper() == "START" or user_input == "1" or user_input.upper() == "S":
                 word, split_word, unsolved_word = gen_word()
                 constants.current_menu = "GAME"
+                
             elif user_input.upper() == "OPTIONS" or user_input == "2" or user_input.upper() == "O":
                 print(constants.options_message)
                 constants.current_menu = "OPTIONS"
+                
             elif user_input.upper() == "QUIT" or user_input == "3" or user_input.upper() == "Q":
                     print("Goodbye!")
                     exit() 
@@ -150,6 +152,7 @@ def main():
                     break  
           
         while constants.current_menu == "GAME":
+            user_input = input("Guess a letter: ")
             if check_word(user_input, split_word, unsolved_word, word):
                 user_input = "NONE"
                 user_input = input(constants.welcome_message + "\nType an option: ")
@@ -166,24 +169,11 @@ def gen_word():
         unsolved_word = list("_" * (len(word.lower())))
         print(f'{constants.hangman[0][0]}\n Word: {" ".join(unsolved_word)}\n')        
         return word.lower(), split_word, unsolved_word
-    
+   
     
 def check_word(user_input, split_word, unsolved_word, word):
-    if user_input in split_word:
-        for i in range(len(split_word)):
-            if split_word[i] == user_input:
-                unsolved_word[i] = user_input
-    else:
-        constants.guess_count += 1
-        constants.guessed_letters.append(user_input)
-        if constants.guess_count >= 6:
-            print(constants.hangman[constants.guess_count][0])
-            print(f'\nYou Lost! :(\nThe word was: "{word}" \n')
-            reset_game()
-            return True
-        else:
-            pass#print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}")
-        
+    print(f"{word}\n")
+    #print(split_word)
     if unsolved_word == split_word or user_input.upper() == word.upper():
         print(constants.hangman[constants.guess_count][0])
         print("You win!")
@@ -191,10 +181,25 @@ def check_word(user_input, split_word, unsolved_word, word):
         reset_game()
         return True
     
+    if user_input in split_word:
+        for i in range(len(split_word)):
+            if split_word[i] == user_input:
+                unsolved_word[i] = user_input
+    else:
+        constants.guess_count += 1
+        constants.guessed_letters.append(user_input)
+        #print(constants.hangman[constants.guess_count][0])
+        if constants.guess_count >= 6:
+            print(constants.hangman[constants.guess_count][0])
+            print(f'\nYou Lost! :(\nThe word was: "{word}" \n')
+            reset_game()
+            return True
+        else:
+            pass#print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}")
+    
     print(constants.hangman[constants.guess_count][0])
     print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}\n")
     print(f'Word: {" ".join(unsolved_word)}\n')
-
 
 def reset_game():
     constants.current_menu = "MAIN"
@@ -219,7 +224,6 @@ def check_return_to_menu(user_input):
         exit()
     return False
                     
-
 main()
 
 
