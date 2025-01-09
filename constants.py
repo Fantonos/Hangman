@@ -4,21 +4,26 @@ import random
 guess_count = 0
 guessed_letters = []
 current_menu = "MAIN"
-
+global timer_time
 
 def set_diff(diff):
+    global timer_time
     if sentence_Mode == "On":
         sentence_multiplier = 10
     else:
         sentence_multiplier = 0
     
     if diff == "EASY": 
+        timer_time = 60
         return random.randint(3 + sentence_multiplier, 5 + sentence_multiplier)
     elif diff == "MEDIUM":
+        timer_time = 45
         return random.randint(6 + sentence_multiplier, 7 + sentence_multiplier)
     elif diff == "HARD":
+        timer_time = 30
         return random.randint(8 + sentence_multiplier, 9 + sentence_multiplier)
     elif diff == "RANDOM":
+        timer_time = random.randint(30, 60)
         return random.randint(3 + sentence_multiplier, 9 + sentence_multiplier)
     else:
         print("Invalid Difficulty")
@@ -94,7 +99,7 @@ movies = {
     
     7: ['Titanic', 'Skyfall', 'Twister'],  
     8: ['Inception', 'Parasite', 'Gladiator'],  
-    9: ['Interstellar', 'TheGodfather', 'TheNotebook'],
+    9: ['Interstellar', 'The God father', 'The Note book'],
     
     13: ["I love the movie Frozen", "The Lion King is a great film", "Star Wars is very popular"],
     14: ["Finding Nemo is a funny movie", "Toy Story is an animated classic", "The Wizard of Oz is a colorful film"],
@@ -132,6 +137,7 @@ fruits = {
 }
 
 hangman = {  
+    7: ['''     +---+\n    \O/  |  \n     |   |\n    /~\  |\n        ===  '''],       
     6: ['''     +---+\n     O   |  \n    /|\  |\n    / \  |\n        ===  '''],
     5: ['''     +---+\n     O   |  \n    /|\  |\n    /    |\n        ===  '''],
     4: ['''     +---+\n     O   |  \n    /|\  |\n         |\n        ===  '''],
@@ -140,6 +146,8 @@ hangman = {
     1: ['''     +---+\n     O   |  \n         |\n         |\n        ===  '''],
     0: ['''     +---+\n         |  \n         |\n         |\n        ===  ''']
 }
+
+print(hangman[7][0])
 
 welcome_message = '''
 Welcome to Hangman
@@ -157,11 +165,14 @@ word_cat_list_message = f"\nCurrently Selected Categories: {", ".join(dict_cat_l
 sentence_Mode = "Off"
 sentence_Mode_message = "\nSelect a sentence mode:\n 1.)On\n 2.)Off\n\n O.)<-Return to Options: \n M.)<-Return To Main Menu:\n"
 
+
 timer = "Off"
+timer_time = 60
+elapsed_time = 0
 timer_message = "\nSelect a timer:\n 1.)On\n 2.)Off\n\n O.)<-Return to Options: \n M.)<-Return To Main Menu:\n"
 
 difficulty_message = "\nSelect a difficulty:\n 1.)Easy:\n 2.)Medium:\n 3.)Hard:\n 4.)Random:\n\n O.)<-Return to Options: \n M.)<-Return To Main Menu:\n"
-difficulty = "EASY"
+difficulty = "RANDOM"
 
 options_message = '''
 1.) Difficulty: Easy, Medium, Hard

@@ -1,10 +1,12 @@
 import random
+import threading
 import time
 import constants
 
 
 def main():
     user_input = input(constants.welcome_message + "\nType an option: ")
+    
     while True:
         while constants.current_menu == "MAIN":
             if user_input.upper() == "START" or user_input == "1" or user_input.upper() == "S":
@@ -18,12 +20,12 @@ def main():
                 
             elif user_input.upper() == "QUIT" or user_input == "3" or user_input.upper() == "Q":
                     print("Goodbye!")
+                    stop_event.set()
                     exit() 
             elif user_input.upper() != "NONE":
                 user_input = input(constants.welcome_message + f"\n--- '{user_input.upper()}' Invalid input --- \nType an option: ")
             
         while constants.current_menu == "OPTIONS":     
-            #user_input = input(constants.options_message + f"\nType an option: ")
 
             if user_input.upper() == "DIFFICULTY" or user_input == "1":
                 user_input = "NONE"
@@ -143,10 +145,12 @@ def main():
                     print(constants.timer_message)
                     if user_input.upper()== "ON" or user_input == "1":
                         print(constants.timer_message)
+                        constants.timer = "On"
                         print("--- Timer On ---")
 
                     elif user_input.upper()== "OFF" or user_input == "2":
                         print(constants.timer_message)
+                        constants.timer = "Off"
                         print("--- Timer Off ---")
 
                     elif check_return_to_menu(user_input):
@@ -173,6 +177,7 @@ def main():
                 break
             if user_input.upper() == "QUIT" or user_input.upper() == "Q":
                 print("Goodbye!")
+                stop_event.set()
                 exit()
 
 
@@ -184,15 +189,20 @@ def gen_word():
         if constants.sentence_Mode == "On":
             check_word(" ", split_word, unsolved_word, word)    
         else:
-            print(f"{constants.hangman[0][0]}\nThe {constants.item_type}: {''.join(unsolved_word)}\n")
-    
+            if constants.timer == "On":
+                print(f"{constants.hangman[0][0]}\nIncorrect guess's: {", ".join(constants.guessed_letters)}\nTime Remaining: {constants.timer_time - constants.elapsed_time}s\nThe {constants.item_type}: {''.join(unsolved_word)}\n")
+            else:
+                print(f"{constants.hangman[0][0]}\nIncorrect guess's: {", ".join(constants.guessed_letters)}\nThe {constants.item_type}: {''.join(unsolved_word)}\n")
+        if constants.timer == "On":
+            timer_thread = threading.Thread(target=timer, args=(constants.timer_time, stop_event))
+            timer_thread.start()
         return word, split_word, unsolved_word
       
 def check_word(user_input, split_word, unsolved_word, word):
     if check_if_win(unsolved_word, split_word, user_input, word):
         return True
     
-    if user_input in split_word:
+    if user_input in split_word and constants.guess_count < 6:
         for i in range(len(split_word)):
             if split_word[i] == user_input:
                 unsolved_word[i] = user_input
@@ -209,15 +219,21 @@ def check_word(user_input, split_word, unsolved_word, word):
         return True
     
     print(constants.hangman[constants.guess_count][0])
-    print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}\n")
-    print(f'The {constants.item_type}: {"".join(unsolved_word)}\n')
+    print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}")
+    if constants.timer == "On":
+        print(f'Time Remaining: {constants.timer_time - constants.elapsed_time}s\nThe {constants.item_type}: {"".join(unsolved_word)}\n')
+    else:
+        print(f'\nThe {constants.item_type}: {"".join(unsolved_word)}\n')
 
 def reset_game():
+    stop_event.set()
     constants.current_menu = "MAIN"
     input("*Press enter to continue*")
     print(constants.welcome_message)
     constants.guess_count = 0
+    constants.elapsed_time = 0
     constants.guessed_letters = []
+    stop_event.clear()
     return
     
 def check_return_to_menu(user_input):
@@ -232,22 +248,28 @@ def check_return_to_menu(user_input):
     
     elif user_input.upper() == "QUIT" or user_input.upper() == "Q":
         print("Goodbye!")
+        stop_event.set()
         exit()
     return False
     
 def check_if_win(unsolved_word, split_word, user_input, word):
-        if unsolved_word == split_word or user_input.upper() == word.upper():
-            #print(constants.hangman[constants.guess_count][0])
+        if (unsolved_word == split_word or user_input.upper() == word.upper()) and constants.guess_count < 6:
             print(f"{constants.hangman[constants.guess_count][0]}\nYou win!\n\nThat's Correct! The {constants.item_type} was: '{word}'.\n")
             reset_game()
             return True
         return False  
 
+def timer(seconds, stop_event):
+    constants.elapsed_time = 0
+    while constants.elapsed_time < seconds:
+        if stop_event.is_set():  # Check if the stop signal is set
+            return
+        time.sleep(.25)
+        constants.elapsed_time += .25 
+    print("\nTimes Up!\n*Press enter to continue*")
+    constants.guess_count = 6
+    
+stop_event = threading.Event()
+
 main()
 
-
-
-
-'''word, split_word, unsolved_word = gen_word()
-check_word("a", split_word, unsolved_word, word)
-print(word)'''
