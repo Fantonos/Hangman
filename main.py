@@ -5,7 +5,6 @@ import constants
 
 def main():
     user_input = input(constants.welcome_message + "\nType an option: ")
-
     while True:
         while constants.current_menu == "MAIN":
             if user_input.upper() == "START" or user_input == "1" or user_input.upper() == "S":
@@ -13,21 +12,20 @@ def main():
                 constants.current_menu = "GAME"
                 
             elif user_input.upper() == "OPTIONS" or user_input == "2" or user_input.upper() == "O":
-                print(constants.options_message)
+                #print(constants.options_message)
                 constants.current_menu = "OPTIONS"
+                user_input = input(constants.options_message + f"\nType an option: ")
                 
             elif user_input.upper() == "QUIT" or user_input == "3" or user_input.upper() == "Q":
                     print("Goodbye!")
                     exit() 
             elif user_input.upper() != "NONE":
-                print("--- Invalid input. ---")
-                user_input = input(constants.welcome_message + "\n--- Invalid input. --- \nType an option: ")
-        
-        while constants.current_menu == "OPTIONS":
+                user_input = input(constants.welcome_message + f"\n--- '{user_input.upper()}' Invalid input --- \nType an option: ")
             
-            user_input = input("Type an option: ")
+        while constants.current_menu == "OPTIONS":     
+            #user_input = input(constants.options_message + f"\nType an option: ")
 
-            if user_input.upper() == "DIFFICULTY" or user_input == "1" or user_input.upper() == "D":
+            if user_input.upper() == "DIFFICULTY" or user_input == "1":
                 user_input = "NONE"
                 while True:
                     print(constants.difficulty_message)
@@ -43,13 +41,18 @@ def main():
                         print(constants.difficulty_message)
                         constants.difficulty = "HARD"
                         print("--- Hard Mode selected ---")
+                    elif user_input.upper()== "RANDOM" or user_input == "4":
+                        print(constants.difficulty_message)
+                        constants.difficulty = "RANDOM"
+                        print("--- Random Mode selected ---")
                     elif user_input.upper() != "NONE":
-                        print("--- Invalid input ---")
-                    if check_return_to_menu(user_input):                  
+                        print(f"--- '{user_input.upper()}' Invalid input ---")
+                    if check_return_to_menu(user_input):  
+                        user_input = input("Type an option: ")                
                         break
                     user_input = input("Type an option: ")
-                            
-            elif user_input.upper() == "WORD CATEGORIES" or user_input == "2" or user_input.upper() == "W":
+                    
+            elif user_input.upper() == "WORD CATEGORIES" or user_input == "2":
                 user_input = "NONE"
                 while True:
                     print(constants.word_cat_list_message)
@@ -92,12 +95,14 @@ def main():
                             constants.word_cat_list.remove(constants.fruits)
                             constants.dict_cat_list.remove("fruits")
                             print("--- Fruits Removed ---")
-                    elif check_return_to_menu(user_input):                  
+                    elif check_return_to_menu(user_input):  
+                        user_input = input("Type an option: ")                
                         break
                     elif user_input.upper() != "NONE":
-                        print("--- Invalid input ---")
+                        print(f"--- '{user_input.upper()}' Invalid input ---")
                     
-                    if check_return_to_menu(user_input):                  
+                    if check_return_to_menu(user_input):   
+                        user_input = input("Type an option: ")               
                         break
                     
                     if len(constants.dict_cat_list) == 0:
@@ -107,27 +112,32 @@ def main():
                         
                     user_input = input(f"Curently Selected Categories: {', '.join(constants.dict_cat_list)}\n Type an option: ")
 
-            elif user_input.upper() == "SENTENCE MODE" or user_input == "3" or user_input.upper() == "S":
+            elif user_input.upper() == "SENTENCE MODE" or user_input == "3":
                 user_input = "NONE"
                 while True:
                     print(constants.sentence_Mode_message)
                     if user_input.upper()== "ON" or user_input == "1":
                         print(constants.sentence_Mode_message)
+                        constants.sentence_Mode = "On"
+                        constants.item_type = "sentence"
                         print("--- Sentence Mode On ---")
                         
                     elif user_input.upper()== "OFF" or user_input == "2":
                         print(constants.sentence_Mode_message)
+                        constants.sentence_Mode = "Off"
+                        constants.item_type = "word"
                         print("--- Sentence Mode Off ---")
                         
                     elif check_return_to_menu(user_input):
+                        user_input = input("Type an option: ")
                         break
                     
                     elif user_input.upper() != "NONE":
-                        print("--- Invalid input ---")
+                        print(f"--- '{user_input.upper()}' Invalid input ---")
 
                     user_input = input("Type an option: ")
 
-            elif user_input.upper() == "TIMER" or user_input == "4" or user_input.upper() == "T":
+            elif user_input.upper() == "TIMER" or user_input == "4":
                 user_input = "NONE"
                 while True:
                     print(constants.timer_message)
@@ -140,16 +150,20 @@ def main():
                         print("--- Timer Off ---")
 
                     elif check_return_to_menu(user_input):
+                        user_input = input("Type an option: ")
                         break
 
                     elif user_input.upper() != "NONE":
-                        print("--- Invalid input ---")
+                        print(f"--- '{user_input.upper()}' Invalid input ---")
                     
                     user_input = input("Type an option: ")
 
-              
             elif check_return_to_menu(user_input):
-                    break  
+                user_input = input("Type an option: ")
+                break  
+            else:
+                user_input = input(constants.options_message + f"\n--- '{user_input.upper()}' Invalid input --- \nType an option: ")
+
           
         while constants.current_menu == "GAME":
             user_input = input("Guess a letter: ")
@@ -165,20 +179,17 @@ def main():
 def gen_word():
         word = (random.choice(constants.word_cat_list))[constants.set_diff(constants.difficulty)][random.randint(0, 2)] #Good luck, trying to under this
         split_word = list(word.lower())
-        
         unsolved_word = list("_" * (len(word.lower())))
-        print(f'{constants.hangman[0][0]}\n Word: {" ".join(unsolved_word)}\n')        
-        return word.lower(), split_word, unsolved_word
-   
+
+        if constants.sentence_Mode == "On":
+            check_word(" ", split_word, unsolved_word, word)    
+        else:
+            print(f"{constants.hangman[0][0]}\nThe {constants.item_type}: {''.join(unsolved_word)}\n")
     
+        return word, split_word, unsolved_word
+      
 def check_word(user_input, split_word, unsolved_word, word):
-    print(f"{word}\n")
-    #print(split_word)
-    if unsolved_word == split_word or user_input.upper() == word.upper():
-        print(constants.hangman[constants.guess_count][0])
-        print("You win!")
-        print(f"That's Correct! The word was: '{word}' ")
-        reset_game()
+    if check_if_win(unsolved_word, split_word, user_input, word):
         return True
     
     if user_input in split_word:
@@ -188,22 +199,22 @@ def check_word(user_input, split_word, unsolved_word, word):
     else:
         constants.guess_count += 1
         constants.guessed_letters.append(user_input)
-        #print(constants.hangman[constants.guess_count][0])
         if constants.guess_count >= 6:
             print(constants.hangman[constants.guess_count][0])
-            print(f'\nYou Lost! :(\nThe word was: "{word}" \n')
+            print(f'You Lost! :(\nThe {constants.item_type} was: "{word}" \n')
             reset_game()
             return True
-        else:
-            pass#print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}")
+    
+    if check_if_win(unsolved_word, split_word, user_input, word):
+        return True
     
     print(constants.hangman[constants.guess_count][0])
     print(f"Incorrect guess's: {", ".join(constants.guessed_letters)}\n")
-    print(f'Word: {" ".join(unsolved_word)}\n')
+    print(f'The {constants.item_type}: {"".join(unsolved_word)}\n')
 
 def reset_game():
     constants.current_menu = "MAIN"
-    input("Press enter to continue")
+    input("*Press enter to continue*")
     print(constants.welcome_message)
     constants.guess_count = 0
     constants.guessed_letters = []
@@ -217,13 +228,26 @@ def check_return_to_menu(user_input):
     elif user_input.upper() == "RETURN TO MENU" or user_input.upper() == "M":
         constants.current_menu = "MAIN"
         print(constants.welcome_message)
-        
         return True
+    
     elif user_input.upper() == "QUIT" or user_input.upper() == "Q":
         print("Goodbye!")
         exit()
     return False
-                    
+    
+def check_if_win(unsolved_word, split_word, user_input, word):
+        if unsolved_word == split_word or user_input.upper() == word.upper():
+            #print(constants.hangman[constants.guess_count][0])
+            print(f"{constants.hangman[constants.guess_count][0]}\nYou win!\n\nThat's Correct! The {constants.item_type} was: '{word}'.\n")
+            reset_game()
+            return True
+        return False  
+
 main()
 
 
+
+
+'''word, split_word, unsolved_word = gen_word()
+check_word("a", split_word, unsolved_word, word)
+print(word)'''
