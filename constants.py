@@ -30,8 +30,6 @@ def set_diff(diff):
         return random.randint(3, 9)
     
     
-    
-
 '''words = {
     3: ['cat', 'dog', 'pig', 'bat', 'ant'],
     4: ['tree', 'bird', 'fish', 'frog', 'wolf'],
@@ -99,7 +97,7 @@ movies = {
     
     7: ['Titanic', 'Skyfall', 'Twister'],  
     8: ['Inception', 'Parasite', 'Gladiator'],  
-    9: ['Interstellar', 'The God father', 'The Note book'],
+    9: ['Interstellar', 'The God father', 'The Notebook'],
     
     13: ["I love the movie Frozen", "The Lion King is a great film", "Star Wars is very popular"],
     14: ["Finding Nemo is a funny movie", "Toy Story is an animated classic", "The Wizard of Oz is a colorful film"],
@@ -137,20 +135,18 @@ fruits = {
 }
 
 hangman = {  
-    7: ['''     +---+\n    \O/  |  \n     |   |\n    /~\  |\n        ===  '''],       
-    6: ['''     +---+\n     O   |  \n    /|\  |\n    / \  |\n        ===  '''],
-    5: ['''     +---+\n     O   |  \n    /|\  |\n    /    |\n        ===  '''],
-    4: ['''     +---+\n     O   |  \n    /|\  |\n         |\n        ===  '''],
+    7: ['''     +---+\n    \\O/  |  \n     |   |\n    /~\\  |\n        ===  '''],       
+    6: ['''     +---+\n     O   |  \n    /|\\  |\n    / \\  |\n        ===  '''],
+    5: ['''     +---+\n     O   |  \n    /|\\  |\n    /    |\n        ===  '''],
+    4: ['''     +---+\n     O   |  \n    /|\\  |\n         |\n        ===  '''],
     3: ['''     +---+\n     O   |  \n    /|   |\n         |\n        ===  '''],
     2: ['''     +---+\n     O   |  \n     |   |\n         |\n        ===  '''],
     1: ['''     +---+\n     O   |  \n         |\n         |\n        ===  '''],
     0: ['''     +---+\n         |  \n         |\n         |\n        ===  ''']
 }
 
-print(hangman[7][0])
-
 welcome_message = '''
-Welcome to Hangman
+Welcome to Hangman!
 By: Fantonos
 
 1.) Start
